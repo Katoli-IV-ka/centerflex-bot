@@ -3,6 +3,9 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 catalogMenuKb = ReplyKeyboardMarkup(
     resize_keyboard=True,
+    #input_field_placeholder='Каталог товаров',
+    #is_persistent=True,
+    #selective=True,
 ).row(
     KeyboardButton(text='Добавить товар'),
     KeyboardButton(text='Пос в меню')
@@ -11,9 +14,12 @@ catalogMenuKb = ReplyKeyboardMarkup(
 )
 
 
-loadPhotoKb = ReplyKeyboardMarkup().row(
-    KeyboardButton(text="Cохранить фото", callback_data="add_photo_to_catalog"),
-    KeyboardButton(text="Назад/Отменить загруку", callback_data="back_to_add_tittle")
+loadPhotoKb = ReplyKeyboardMarkup(
+    resize_keyboard=True,
+    #one_time_keyboard=False,
+).row(
+    KeyboardButton(text="Cохранить фото"),
+    KeyboardButton(text="Отменить загруку")
 )
 
 
