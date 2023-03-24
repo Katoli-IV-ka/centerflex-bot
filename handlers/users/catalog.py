@@ -6,7 +6,7 @@ from keyboards.reply.catalog import loadPhotoKb, catalogMenuKb
 from main import dp, bot
 from aiogram.utils.exceptions import MessageToForwardNotFound, ChatNotFound
 
-from states.to_add_products import AddProductStates
+from states.states import AddProductStates
 
 
 @dp.message_handler(text="Добавить товар", state='*')
@@ -66,8 +66,6 @@ async def _(msg: Message, state: FSMContext):
     print('msg:\n', msg)
     await state.finish()
     await msg.answer(text='Catalog', reply_markup=catalogMenuKb)
-
-# Инлайн клавиатура
 
 
 # Не правильный ввод state = addPhoto

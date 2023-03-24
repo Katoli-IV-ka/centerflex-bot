@@ -1,14 +1,21 @@
-from aiogram import Bot, executor, Dispatcher
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+import asyncio
+
+from aiogram import Bot, Dispatcher
+from aiogram.fsm.storage.memory import MemoryStorage
+
+from catalog.router import catalogRouter
 
 from config import BOT_TOKEN
 
 
-storage = MemoryStorage()
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher(bot=bot, storage=storage)
+async def main():
+    bot = Bot(token=BOT_TOKEN)
+    dp = Dispatcher(storage=MemoryStorage())
+
+    dp.include_routers(catalogRouter)
+
+    await dp.start_polling(bot, allowed_updates=dp.resolve_used_update_types())
 
 
 if __name__ == "__main__":
-    from handlers import dp
-    executor.start_polling(dp, skip_updates=True)
+    asyncio.run(main())

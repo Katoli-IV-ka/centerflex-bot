@@ -6,7 +6,7 @@ from main import dp, bot
 from aiogram.types import Message
 
 from keyboards.reply.catalog import catalogMenuKb
-from states.to_add_products import AddProductStates
+from states.states import AddProductStates
 
 
 @dp.message_handler(commands=['start', 'hi'], state='*')
