@@ -5,8 +5,6 @@ from handlers.catalog_admin.router import catalog_router
 from handlers.commands import cmdRouter
 
 
-
-
 async def main():
     bot = Bot(token="6244240330:AAGW-yNw74YBKVpAW4Np6J4QpLAIvsf0PB0")
     dp = Dispatcher()

@@ -13,40 +13,16 @@ router = Router()
 
 @router.message(F.photo, AddItemStates.getPhoto)
 async def msg_add_photo(msg: Message, state: FSMContext):
-    # Сохраняем id фото и id сообщения для удаления при следующем срабатывании
-    await state.update_data(
-        photos=await update_list(state, 'photos', msg.photo[-1].file_id),
-        trash=await update_list(state, 'trash', msg.message_id+1),
-    )
-    # Сохраненние и переключение state
-    await msg.answer_photo(
-        caption='Первое фото:',
-        photo=msg.photo[-1].file_id,
-        reply_markup=getSaveKb("save_photo")
-    )
-    await state.set_state(AddItemStates.getSubsequentPhoto)
+    message = await get_value(state, 'photo_invitation')
+    await message.edit_text(text=f'handlers/get_photo: Теперь загрузи фотографии товара\
+        \n📷 загруженно фотографий: {int(message.text.split(" ")[-1])+1}')
+
+    if msg.media_group_id is not None:
+        print(msg.media_group_id)
+
+    message = await message.edit_reply_markup(reply_markup=getSaveKb("save_photo"))
+    await state.update_data(photo_invitation=message)
     await msg.delete()
-
-
-@router.message(F.photo, AddItemStates.getSubsequentPhoto)
-async def msg_add_photo(msg: Message, state: FSMContext, bot: Bot):
-    # Удаляем сообщения с старым mediaGroup
-    for trash_message in await get_value(state, 'trash'):
-        await bot.delete_message(message_id=trash_message, chat_id=msg.chat.id)
-    await state.update_data(trash=[])
-    await msg.delete()
-
-    # Сохраняем id фото и id сообщения для удаления при следующем срабатывании
-    await state.update_data(
-        photos=await update_list(state, 'photos', msg.photo[-1].file_id),
-        trash=await update_list(state, 'trash', msg.message_id+1),
-    )
-    # Отправляем новый mediaGroup + вопрос о сохранении
-    await msg.answer_media_group(media=await get_media(state=state))
-    await msg.answer(
-        text='Если всё верно жми сохранить',
-        reply_markup=getSaveKb('save_photo')
-    )
 
 
 @router.callback_query(Text('save_photo'))

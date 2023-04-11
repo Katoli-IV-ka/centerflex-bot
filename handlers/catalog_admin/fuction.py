@@ -2,8 +2,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import InputMediaPhoto
 
 
-async def get_value(state, key):
-    data = await state.get_data()
+async def get_value(self, key):
+    data = await self.get_data()
     value = data[key]
     return value
 
@@ -25,3 +25,5 @@ async def update_list(state, key, value):
     ls = data[key]
     ls.append(value)
     return ls
+
+
