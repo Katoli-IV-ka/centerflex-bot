@@ -8,7 +8,7 @@ from handlers.commands import cmdRouter
 
 
 async def main():
-    bot = Bot(token="6244240330:AAGW-yNw74YBKVpAW4Np6J4QpLAIvsf0PB0")
+    bot = Bot(token="ТУТ Должен быть токен")
     dp = Dispatcher()
     dp.include_routers(cmdRouter)
     dp.include_routers(catalog_router)
