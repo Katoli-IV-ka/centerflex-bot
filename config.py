@@ -4,5 +4,3 @@ ADMIN_LIST = {
     'Maks': None,
     'Kostya': None,
 }
-
-what?
