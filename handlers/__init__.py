@@ -1,3 +1,8 @@
-from . import catalog, commands
+from . import catalog_handlers, commands, admin_handlers, user_handlers
 
-all_handlers = [catalog.router, commands.router]
+all_handlers = [
+    catalog_handlers.router,
+    commands.router,
+    admin_handlers.router,
+    user_handlers.router,
+]

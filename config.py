@@ -1,4 +1,4 @@
-TOKEN = "6244240330:AAG4SKAqob8s0yC_ckLcEsPRdcrluLY8cQw"
+TOKEN = "6244240330:AAEjQHYkaiJrOxDq32zLO3fwU6DeqdXpWFI"
 
 ADMIN_LIST = {
     'Maks': None,
