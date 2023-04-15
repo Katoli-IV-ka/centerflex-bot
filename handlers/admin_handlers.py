@@ -10,11 +10,6 @@ async def edit_catalog_call(msg: Message):
     await msg.answer(text="edit_catalog")
 
 
-@router.callback_query(Text('add_to_catalog'))
-async def add_to_catalog_call(msg: Message):
-    await msg.answer(text="add_to_catalog")
-
-
 @router.callback_query(Text('notification_queue'))
 async def notification_queue_call(msg: Message):
     await msg.answer(text="notification_queue")
