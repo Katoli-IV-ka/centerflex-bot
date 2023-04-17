@@ -13,9 +13,22 @@ def admin_keyboard() -> InlineKeyboardMarkup:
     return keyboard.as_markup()
 
 
+def go_to_keyboard(callback_data, text='Далее') -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+    keyboard.button(text=text, callback_data=callback_data)
+    return keyboard.as_markup()
+
+
+def cancel_keyboard() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+    keyboard.button(text='Отменить добавление товара', callback_data='cancel_add_product')
+    return keyboard.as_markup()
+
+
+# Похоже что клавиатуры ниже будут заменены билдером go_to_keyboard
 def to_admin_keyboard() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
-    keyboard.button(text='Назад в меню', callback_data='to_admin_menu')
+    keyboard.button(text='В меню', callback_data='add_product')
     return keyboard.as_markup()
 
 
@@ -31,9 +44,13 @@ def to_title_keyboard(text='Далее') -> InlineKeyboardMarkup:
     return keyboard.as_markup()
 
 
-def to_caption_keyboard(text='Далее') -> InlineKeyboardMarkup:
+def to_description_keyboard(text='Далее') -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
-    keyboard.button(text=text, callback_data='to_caption')
+    keyboard.button(text=text, callback_data='to_description')
     return keyboard.as_markup()
 
 
+def to_price_keyboard(text='Далее') -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+    keyboard.button(text=text, callback_data='to_price')
+    return keyboard.as_markup()

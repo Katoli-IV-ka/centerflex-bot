@@ -1,10 +1,11 @@
 from aiogram import Router, F
 from aiogram.enums import ParseMode
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from keyboards.admin_keyboards import to_title_keyboard, to_caption_keyboard
+from keyboards.admin_keyboards import go_to_keyboard, cancel_keyboard
 from states.add_product import AddProductStates
 
 router = Router()
@@ -20,7 +21,10 @@ async def to_photo_call(call: CallbackQuery, state: FSMContext):
     await state.set_state(AddProductStates.getPhoto)
 
     # сохраняем экземпляр сообщения для последующего удаления
-    answer_msg = await call.message.answer(text=f'🖼 Загрузи фотографию товара', reply_markup=to_title_keyboard())
+    answer_msg = await call.message.answer(
+        text=f'🖼 Загрузи фотографию товара',
+        reply_markup=cancel_keyboard())
+
     await state.update_data(to_photo_temp=answer_msg)
 
 
@@ -35,8 +39,9 @@ async def get_photo(msg: Message, state: FSMContext):
         pass
 
     answer_msg = await msg.answer_photo(
-        caption='*Фотография загружена, сохранить?*\n\n_Чтобы изменить, просто отправь новое фото_',
-        reply_markup=to_caption_keyboard(),
+        caption="*Фотография загружена, сохранить?*\n"
+                "\nЧтобы изменить, просто отправь новое фото",
+        reply_markup=go_to_keyboard(callback_data='to_description'),
         photo=msg.photo[-1].file_id,
         parse_mode=ParseMode.MARKDOWN_V2,
     )
