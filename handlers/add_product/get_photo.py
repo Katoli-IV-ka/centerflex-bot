@@ -23,7 +23,7 @@ async def to_photo_call(call: CallbackQuery, state: FSMContext):
     # сохраняем экземпляр сообщения для последующего удаления
     answer_msg = await call.message.answer(
         text=f'🖼 Загрузи фотографию товара',
-        reply_markup=cancel_keyboard())
+        reply_markup=cancel_keyboard('get_photo_temp'))
 
     await state.update_data(to_photo_temp=answer_msg)
 

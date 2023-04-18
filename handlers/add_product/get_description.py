@@ -26,7 +26,7 @@ async def to_description_call(call: CallbackQuery, state: FSMContext):
 
     await call.message.answer(
         text=f'📝 Добавь описание товару',
-        reply_markup=cancel_keyboard()
+        reply_markup=cancel_keyboard('get_description_temp')
     )
 
 

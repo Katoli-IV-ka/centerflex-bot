@@ -16,11 +16,12 @@ async def add_product_call(call: CallbackQuery, state: FSMContext):
     await state.set_state(AddProductStates.getTitle)
     answer_msg = await call.message.answer(
         text="✏ Введи название товара:",
-        reply_markup=cancel_keyboard()
+        reply_markup=cancel_keyboard('get_title_temp')
     )
 
     # получаем экземпляр сообщения для последующего удаления
     await state.update_data(add_product_temp=answer_msg)
+    # await state.update_data({'temp_message': answer_msg})
 
 
 @router.message(F.text, AddProductStates.getTitle)
