@@ -34,3 +34,8 @@ async def edit_info_call(call: CallbackQuery, state: FSMContext):
 
     await call.message.delete()
     await cmd_admin(msg=call.message, state=state)
+
+
+@router.callback_query(Text('edit_info'))
+async def edit_info_call(msg: Message):
+    await msg.answer(text="edit_info")

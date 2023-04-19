@@ -24,6 +24,7 @@ async def cmd_start(msg: types.Message, state: FSMContext):
 async def cmd_admin(msg: types.Message, state: FSMContext):
     # сбрасываем все состояния
     await state.clear()
+    print(await state.get_data())
 
     # Отправляем меню администратора
     await msg.answer(text="Здесь ты можешь упралять ботом", reply_markup=admin_keyboard())

@@ -23,7 +23,7 @@ async def to_description_call(call: CallbackQuery, state: FSMContext):
 
     answer_msg = await call.message.answer(
         text=f'📝 Добавь описание товару',
-        reply_markup=cancel_keyboard('get_description_temp')
+        reply_markup=cancel_keyboard(data='get_description_temp', skip_to="to_price")
     )
 
     await state.update_data(to_description_temp=answer_msg)
@@ -31,8 +31,9 @@ async def to_description_call(call: CallbackQuery, state: FSMContext):
 
 @router.message(F.text, AddProductStates.getDescription)
 async def get_description(msg: Message, state: FSMContext):
-    # удаляем не нужные сообщения
+    # чистим чат
     data = await state.get_data()
+    await msg.delete()
     try:
         await data['get_description_temp'].delete()
     except KeyError:

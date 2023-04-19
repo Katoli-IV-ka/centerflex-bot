@@ -6,3 +6,4 @@ class AddProductStates(StatesGroup):
     getPhoto = State()
     getDescription = State()
     getPrice = State()
+    saveProduct = State()
