@@ -17,21 +17,20 @@ async def to_description_call(call: CallbackQuery, state: FSMContext):
     # чистим чат
     data = await state.get_data()
     await call.message.delete()
-    try:
-        await data['to_photo_temp'].delete()
-    except TelegramBadRequest:
-        pass
+    await data['to_photo_temp'].delete()
 
     await state.set_state(AddProductStates.getDescription)
 
-    await call.message.answer(
+    answer_msg = await call.message.answer(
         text=f'📝 Добавь описание товару',
         reply_markup=cancel_keyboard('get_description_temp')
     )
 
+    await state.update_data(to_description_temp=answer_msg)
+
 
 @router.message(F.text, AddProductStates.getDescription)
-async def get_title(msg: Message, state: FSMContext):
+async def get_description(msg: Message, state: FSMContext):
     # удаляем не нужные сообщения
     data = await state.get_data()
     try:
@@ -43,7 +42,7 @@ async def get_title(msg: Message, state: FSMContext):
     answer_msg = await msg.answer(
         text=f"*Описание добавленно*:\n_{msg.text}_\n"
              "\nЕсли нужно внести правки просто отправить новое сообщение",
-        reply_markup=go_to_keyboard(callback_data='to_price'),
+        reply_markup=go_to_keyboard(callback_data='to_price', text='Далее  👟'),
         parse_mode=ParseMode.MARKDOWN_V2
     )
 
@@ -56,6 +55,6 @@ async def edit_description_message(msg: Message, data: dict):
     await data['get_description_temp'].edit_text(
         text=f"*Описание добавленно*:\n_{msg.text}_\n"
              "\nЕсли нужно внести правки просто отправить новое сообщение",
-        reply_markup=go_to_keyboard(callback_data='to_price'),
+        reply_markup=go_to_keyboard(callback_data='to_price', text='Далее  👟'),
         parse_mode=ParseMode.MARKDOWN_V2
     )

@@ -21,7 +21,7 @@ async def add_product_call(call: CallbackQuery, state: FSMContext):
 
     # получаем экземпляр сообщения для последующего удаления
     await state.update_data(add_product_temp=answer_msg)
-    # await state.update_data({'temp_message': answer_msg})
+
 
 
 @router.message(F.text, AddProductStates.getTitle)
@@ -37,7 +37,7 @@ async def get_title(msg: Message, state: FSMContext):
     # получаем экземпляр сообщения для последующего удаления
     answer_msg = await msg.answer(
         text=f"*Название товара*: _{msg.text}_\n"
-             "\nЧтобы внести изменения отредактируй сообщение или отправь новое\. Если всё верно идём дальше",
+             "\nЧтобы внести изменения отредактируй сообщение или отправь новое\. Если всё верно, идём дальше 👟",
         reply_markup=go_to_keyboard(callback_data='to_photo'),
         parse_mode=ParseMode.MARKDOWN_V2
     )

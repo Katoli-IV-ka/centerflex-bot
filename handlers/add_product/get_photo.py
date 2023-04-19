@@ -1,6 +1,5 @@
 from aiogram import Router, F
 from aiogram.enums import ParseMode
-from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
@@ -41,7 +40,7 @@ async def get_photo(msg: Message, state: FSMContext):
     answer_msg = await msg.answer_photo(
         caption="*Фотография загружена, сохранить?*\n"
                 "\nЧтобы изменить, просто отправь новое фото",
-        reply_markup=go_to_keyboard(callback_data='to_description'),
+        reply_markup=go_to_keyboard(callback_data='to_description', text='Далее  👟'),
         photo=msg.photo[-1].file_id,
         parse_mode=ParseMode.MARKDOWN_V2,
     )
