@@ -1,4 +1,4 @@
-def make_text(data: dict):
+def format_product_text(data: dict):
     text = f"*{data['product_title']}*"
 
     if data['product_description']:

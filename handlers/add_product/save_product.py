@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from database import add_product
-from handlers.add_product.fuction import make_text
+from handlers.add_product.fuction import format_product_text
 from keyboards.admin_keyboards import save_product_keyboard
 from states.add_product import AddProductStates
 
@@ -37,7 +37,7 @@ async def to_price_call(call: CallbackQuery, state: FSMContext):
     await call.message.answer_photo(
         photo=data['product_photo_id'],
         parse_mode=ParseMode.MARKDOWN_V2,
-        caption=make_text(data),
+        caption=format_product_text(data),
         reply_markup=save_product_keyboard()
     )
 
