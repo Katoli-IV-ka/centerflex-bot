@@ -1,5 +1,6 @@
 from aiogram import Router, F
 from aiogram.enums import ParseMode
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
@@ -37,13 +38,19 @@ async def get_photo(msg: Message, state: FSMContext):
     except KeyError:
         pass
 
-    answer_msg = await msg.answer_photo(
-        caption="*Фотография загружена, сохранить?*\n"
-                "\nЧтобы изменить, просто отправь новое фото",
-        reply_markup=go_to_keyboard(callback_data='to_description', text='Далее  👟'),
-        photo=msg.photo[-1].file_id,
-        parse_mode=ParseMode.MARKDOWN_V2,
-    )
+    try:
+        answer_msg = await msg.answer_photo(
+            caption="*Фотография загружена, сохранить?*\n"
+                    "\nЧтобы изменить, просто отправь новое фото",
+            reply_markup=go_to_keyboard(callback_data='to_description', text='Далее  👟'),
+            photo=msg.photo[-1].file_id,
+            parse_mode=ParseMode.MARKDOWN_V2,
+        )
+    except TelegramBadRequest:
+        answer_msg = await msg.answer(
+            text='😬 Извините произошёл сбой. Повторите отправку',
+            reply_markup=cancel_keyboard()
+        )
 
     # сохраняем полученные данные
     await state.update_data(get_photo_temp=answer_msg, product_photo_id=msg.photo[-1].file_id)

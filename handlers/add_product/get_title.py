@@ -41,15 +41,19 @@ async def get_title(msg: Message, state: FSMContext):
     except KeyError:
         pass
 
-
-
     # получаем экземпляр сообщения для последующего удаления
-    answer_msg = await msg.answer(
-        text=f"*Название товара*: _{msg.text}_\n"
-             "\nЧтобы внести изменения отредактируй сообщение или отправь новое\. Если всё верно, идём дальше 👟",
-        reply_markup=go_to_keyboard(callback_data='to_photo'),
-        parse_mode=ParseMode.MARKDOWN_V2
-    )
+    try:
+        answer_msg = await msg.answer(
+            text=f"*Название товара*:` {msg.text}`\n"
+                 "\nЧтобы внести изменения отредактируй сообщение или отправь новое\. Если всё верно, идём дальше 👟",
+            reply_markup=go_to_keyboard(callback_data='to_photo'),
+            parse_mode=ParseMode.MARKDOWN_V2
+        )
+    except TelegramBadRequest:
+        answer_msg = await msg.answer(
+            text='😬 Извините произошёл сбой. Повторите отправку',
+            reply_markup=cancel_keyboard()
+        )
 
     # сохраняем полученные данные
     await state.update_data(product_title=msg.text, get_title_temp=answer_msg)

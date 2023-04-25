@@ -40,12 +40,18 @@ async def get_description(msg: Message, state: FSMContext):
         pass
 
     # получаем экземпляр сообщения для последующего удаления
-    answer_msg = await msg.answer(
-        text=f"*Описание добавленно*:\n_{msg.text}_\n"
-             "\nЕсли нужно внести правки просто отправить новое сообщение",
-        reply_markup=go_to_keyboard(callback_data='to_price', text='Далее  👟'),
-        parse_mode=ParseMode.MARKDOWN_V2
-    )
+    try:
+        answer_msg = await msg.answer(
+            text=f"*Описание добавленно*:\n`{msg.text}`\n"
+                 "\nЕсли нужно внести правки просто отправить новое сообщение или отредактируй старое",
+            reply_markup=go_to_keyboard(callback_data='to_price', text='Далее  👟'),
+            parse_mode=ParseMode.MARKDOWN_V2
+        )
+    except TelegramBadRequest:
+        await msg.answer(
+            text='😬 Извините произошёл сбой. Повторите отправку',
+            reply_markup=cancel_keyboard()
+        )
 
     # сохраняем полученные данные
     await state.update_data(product_description=msg.text, get_description_temp=answer_msg, description_message_temp=msg)
@@ -53,9 +59,16 @@ async def get_description(msg: Message, state: FSMContext):
 
 @router.edited_message(IsDescriptionMessage(), AddProductStates.getDescription)
 async def edit_description_message(msg: Message, data: dict):
-    await data['get_description_temp'].edit_text(
-        text=f"*Описание добавленно*:\n_{msg.text}_\n"
-             "\nЕсли нужно внести правки просто отправить новое сообщение",
-        reply_markup=go_to_keyboard(callback_data='to_price', text='Далее  👟'),
-        parse_mode=ParseMode.MARKDOWN_V2
-    )
+
+    try:
+        await data['get_description_temp'].edit_text(
+            text=f"*Описание добавленно*:\n`{msg.text}`\n"
+                 "\nЕсли нужно внести правки просто отправить новое сообщение или отредактируй старое",
+            reply_markup=go_to_keyboard(callback_data='to_price', text='Далее  👟'),
+            parse_mode=ParseMode.MARKDOWN_V2
+        )
+    except TelegramBadRequest:
+        await msg.answer(
+            text='😬 Извините произошёл сбой. Повторите отправку',
+            reply_markup=cancel_keyboard()
+        )
