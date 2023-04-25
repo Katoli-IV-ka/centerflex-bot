@@ -11,13 +11,13 @@ async def create_products_table():
                 photo_id TEXT NOT Null,
                 description TEXT DEFAULT Null,
                 price TEXT DEFAULT Null,
-                display BOOl DEFAULT True
+                display BOOl DEFAULT False
                 )
         ''')
         await db.commit()
 
 
-async def add_product(title, photo_id, price=None, description=None, display=True):
+async def add_product(title, photo_id, price=None, description=None, display=False):
     async with aiosqlite.connect('db_train.db') as db:
         cursor = await db.cursor()
         await cursor.execute('''
@@ -27,7 +27,7 @@ async def add_product(title, photo_id, price=None, description=None, display=Tru
         await db.commit()
 
 
-async def update_product(id, title, photo_id, price=None, description=None, display=True):
+async def update_product(id, title, photo_id, price=None, description=None, display=False):
     async with aiosqlite.connect('db_train.db') as db:
         cursor = await db.cursor()
         await cursor.execute('''

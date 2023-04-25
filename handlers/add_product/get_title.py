@@ -22,7 +22,13 @@ async def add_product_call(call: CallbackQuery, state: FSMContext):
     )
 
     # получаем экземпляр сообщения для последующего удаления
-    await state.update_data(add_product_temp=answer_msg)
+    # добавляем пустое значениe для необезательных полей
+    await state.update_data(
+        add_product_temp=answer_msg,
+        product_description=None,
+        product_price=None,
+        product_display=False,
+    )
 
 
 @router.message(F.text, AddProductStates.getTitle)

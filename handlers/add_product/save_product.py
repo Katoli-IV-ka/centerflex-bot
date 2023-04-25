@@ -5,6 +5,7 @@ from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
+from database import add_product
 from handlers.add_product.fuction import make_text
 from keyboards.admin_keyboards import save_product_keyboard
 from states.add_product import AddProductStates
@@ -24,12 +25,14 @@ async def to_price_call(call: CallbackQuery, state: FSMContext):
 
     await state.set_state(AddProductStates.saveProduct)
 
-    product_info = []
-    for key in ['product_photo_id', 'product_title', 'product_description', 'product_price']:
-        try:
-            product_info.append(data[key])
-        except KeyError:
-            continue
+    # сохраняем информацию о товаре в базу данных
+    await add_product(
+        title=data['product_title'],
+        photo_id=data['product_photo_id'],
+        description=data['product_description'],
+        price=data['product_price'],
+        display=data['product_display'],
+    )
 
     await call.message.answer_photo(
         photo=data['product_photo_id'],
