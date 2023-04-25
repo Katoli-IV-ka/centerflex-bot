@@ -22,11 +22,13 @@ async def cmd_start(msg: types.Message, state: FSMContext):
 
 @router.message(Command('admin'))
 async def cmd_admin(msg: types.Message, state: FSMContext):
-    # сбрасываем все состояния
+    # сбрасываем все состояния и очищаем данные
     await state.clear()
-    print(await state.get_data())
 
     # Отправляем меню администратора
-    await msg.answer(text="Здесь ты можешь упралять ботом", reply_markup=admin_keyboard())
+    await msg.answer(
+        text="Здесь ты можешь упралять ботом",
+        reply_markup=admin_keyboard()
+    )
 
 
