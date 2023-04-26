@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from database import add_product
-from handlers.add_product.fuction import format_product_text
+from handlers.catalog_admin.fuction import format_product_text
 from keyboards.admin_keyboards import save_product_keyboard
 from states.add_product import AddProductStates
 
