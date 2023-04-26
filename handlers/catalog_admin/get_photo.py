@@ -5,7 +5,7 @@ from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from keyboards.admin_keyboards import go_to_keyboard, cancel_keyboard
+from keyboards.catalog_admin_keyboards import go_to_keyboard, cancel_keyboard
 from states.add_product import AddProductStates
 
 router = Router()

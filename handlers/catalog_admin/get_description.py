@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from filters.id_filter import IsDescriptionMessage
-from keyboards.admin_keyboards import cancel_keyboard, go_to_keyboard
+from keyboards.catalog_admin_keyboards import cancel_keyboard, go_to_keyboard
 from states.add_product import AddProductStates
 
 router = Router()
@@ -64,7 +64,7 @@ async def edit_description_message(msg: Message, data: dict):
         await data['get_description_temp'].edit_text(
             text=f"*Описание добавленно*:\n`{msg.text}`\n"
                  "\nЕсли нужно внести правки просто отправить новое сообщение или отредактируй старое",
-            reply_markup=go_to_keyboard(callback_data='to_price', text='Далее  👟'),
+            reply_markup=go_to_keyboard(callback_data='to_price accept_edit_price', text='Далее  👟'),
             parse_mode=ParseMode.MARKDOWN_V2
         )
     except TelegramBadRequest:

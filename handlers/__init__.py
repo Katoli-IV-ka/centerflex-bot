@@ -1,5 +1,5 @@
 from . import  commands, admin_handlers, user_handlers
-from .add_product import add_product_router
+from .catalog_admin import add_product_router
 
 all_handlers = [
     commands.router,
