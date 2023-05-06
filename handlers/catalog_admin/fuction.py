@@ -1,27 +1,13 @@
-from aiogram.fsm.context import FSMContext
-from aiogram.types import InputMediaPhoto
+def format_product_text(data: dict):
+    text = f"*{data['product_title']}*"
 
+    if data['product_description']:
+        text += f"\n\n_{data['product_description']}_"
 
-async def get_value(state, key):
-    data = await state.get_data()
-    value = data[key]
-    return value
+    if data['product_price']:
+        text += f"\n\nОриентировочная цена: *{data['product_price']}* руб\."
 
+    text += '\n\n\n🛠` Данное сообщение - это представление того как товар отобразиться в каталоге\ (без этой подписи). `'
+    text += '`Чтобы внести изменения используй клавиатуру внизу\.`'
 
-async def get_media(photos=None, state=None):
-    media = []
-    if state:
-        data = await state.get_data()
-        photos = data['photos']
-    for ph in photos:
-        media.append(
-            InputMediaPhoto(type='photo', media=ph)
-        )
-    return media
-
-
-async def update_list(state, key, value):
-    data = await state.get_data()
-    ls = data[key]
-    ls.append(value)
-    return ls
+    return text

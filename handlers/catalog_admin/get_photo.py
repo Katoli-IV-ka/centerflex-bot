@@ -1,60 +1,59 @@
-from aiogram import Router, F, Bot
+from aiogram import Router, F
+from aiogram.enums import ParseMode
+from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from handlers.catalog_admin.fuction import update_list, get_value, get_media
-from keyboards.catalog_admin.options import getOptionsKb
-from keyboards.catalog_admin.save import getSaveKb
-from states.catalog_add_item import AddItemStates
+from keyboards.catalog_admin_keyboards import go_to_keyboard, cancel_keyboard
+from states.add_product import AddProductStates
 
 router = Router()
 
 
-@router.message(F.photo, AddItemStates.getPhoto)
-async def msg_add_photo(msg: Message, state: FSMContext):
-    # Сохраняем id фото и id сообщения для удаления при следующем срабатывании
-    await state.update_data(
-        photos=await update_list(state, 'photos', msg.photo[-1].file_id),
-        trash=await update_list(state, 'trash', msg.message_id+1),
-    )
-    # Сохраненние и переключение state
-    await msg.answer_photo(
-        caption='Первое фото:',
-        photo=msg.photo[-1].file_id,
-        reply_markup=getSaveKb("save_photo")
-    )
-    await state.set_state(AddItemStates.getSubsequentPhoto)
-    await msg.delete()
-
-
-@router.message(F.photo, AddItemStates.getSubsequentPhoto)
-async def msg_add_photo(msg: Message, state: FSMContext, bot: Bot):
-    # Удаляем сообщения с старым mediaGroup
-    for trash_message in await get_value(state, 'trash'):
-        await bot.delete_message(message_id=trash_message, chat_id=msg.chat.id)
-    await state.update_data(trash=[])
-    await msg.delete()
-
-    # Сохраняем id фото и id сообщения для удаления при следующем срабатывании
-    await state.update_data(
-        photos=await update_list(state, 'photos', msg.photo[-1].file_id),
-        trash=await update_list(state, 'trash', msg.message_id+1),
-    )
-    # Отправляем новый mediaGroup + вопрос о сохранении
-    await msg.answer_media_group(media=await get_media(state=state))
-    await msg.answer(
-        text='Если всё верно жми сохранить',
-        reply_markup=getSaveKb('save_photo')
-    )
-
-
-@router.callback_query(Text('save_photo'))
-async def callback_save_tittle(call: CallbackQuery, state: FSMContext):
+@router.callback_query(Text('to_photo'), AddProductStates.getTitle)
+async def to_photo_call(call: CallbackQuery, state: FSMContext):
+    # чистим чат
+    data = await state.get_data()
     await call.message.delete()
-    await state.clear()
-    await call.message.answer(
-        text='photo has saved: Опциональные поля',
-        reply_markup=getOptionsKb(visibility=True)
-    )
+    await data['add_product_temp'].delete()
+
+    await state.set_state(AddProductStates.getPhoto)
+
+    # сохраняем экземпляр сообщения для последующего удаления
+    answer_msg = await call.message.answer(
+        text=f'🖼 Загрузи фотографию товара',
+        reply_markup=cancel_keyboard('get_photo_temp'))
+
+    await state.update_data(to_photo_temp=answer_msg)
+
+
+@router.message(F.photo, AddProductStates.getPhoto)
+async def get_photo(msg: Message, state: FSMContext):
+    # чистим чат
+    data = await state.get_data()
+    await msg.delete()
+    try:
+        await data['get_photo_temp'].delete()
+    except KeyError:
+        pass
+
+    try:
+        answer_msg = await msg.answer_photo(
+            caption="*Фотография загружена, сохранить?*\n"
+                    "\nЧтобы изменить, просто отправь новое фото",
+            reply_markup=go_to_keyboard(callback_data='to_description', text='Далее  👟'),
+            photo=msg.photo[-1].file_id,
+            parse_mode=ParseMode.MARKDOWN_V2,
+        )
+    except TelegramBadRequest:
+        answer_msg = await msg.answer(
+            text='😬 Извините произошёл сбой. Повторите отправку',
+            reply_markup=cancel_keyboard()
+        )
+
+    # сохраняем полученные данные
+    await state.update_data(get_photo_temp=answer_msg, product_photo_id=msg.photo[-1].file_id)
+
+
 
