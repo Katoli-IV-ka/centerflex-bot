@@ -19,7 +19,7 @@ async def to_price_call(call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     await call.message.delete()
     try:
-        await data['to_price_temp'].delete()
+        await data['temp'].delete()
     except TelegramBadRequest:
         pass
 

@@ -21,7 +21,7 @@ async def add_product(title, photo_id, price=None, description=None, display=Fal
     async with aiosqlite.connect('db_train.db') as db:
         cursor = await db.cursor()
         await cursor.execute('''
-            INSERT INTO products (title, price, description, photo_id, disaplay) 
+            INSERT INTO products (title, price, description, photo_id, display) 
             VALUES (?,?,?,?,?)
         ''', (title, price, description, photo_id, display))
         await db.commit()

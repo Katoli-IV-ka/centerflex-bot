@@ -16,8 +16,14 @@ async def to_price_call(call: CallbackQuery, state: FSMContext):
     # чистим чат
     data = await state.get_data()
     await call.message.delete()
+
     try:
-        await data['to_description_temp'].delete()
+        await data['description_message_temp'].delete()
+    except TelegramBadRequest:
+        pass
+
+    try:
+        await data['temp'].delete()
     except TelegramBadRequest:
         pass
 
@@ -25,11 +31,11 @@ async def to_price_call(call: CallbackQuery, state: FSMContext):
 
     answer_msg = await call.message.answer(
         text="💰 Укажи ориентировочную цену:",
-        reply_markup=cancel_keyboard(data='get_price_temp', skip_to="to_save_product")
+        reply_markup=cancel_keyboard(skip_to="to_save_product")
     )
 
     # получаем экземпляр сообщения для последующего удаления
-    await state.update_data(to_price_temp=answer_msg)
+    await state.update_data(temp=answer_msg)
 
 
 @router.message(F.text, AddProductStates.getPrice)
@@ -38,8 +44,8 @@ async def get_price(msg: Message, state: FSMContext):
     data = await state.get_data()
     await msg.delete()
     try:
-        await data['get_price_temp'].delete()
-    except KeyError:
+        await data['previous'].delete()
+    except TelegramBadRequest:
         pass
 
     # получаем экземпляр сообщения для последующего удаления
@@ -51,4 +57,4 @@ async def get_price(msg: Message, state: FSMContext):
     )
 
     # сохраняем полученные данные
-    await state.update_data(product_price=msg.text, get_price_temp=answer_msg, price_message_temp=msg)
+    await state.update_data(previous=answer_msg, product_price=msg.text)

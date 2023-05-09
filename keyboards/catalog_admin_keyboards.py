@@ -8,9 +8,9 @@ def go_to_keyboard(callback_data, text='Далее') -> InlineKeyboardMarkup:
     return keyboard.as_markup()
 
 
-def cancel_keyboard(data='', skip_to: str = False) -> InlineKeyboardMarkup:
+def cancel_keyboard(skip_to: str = False) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
-    keyboard.button(text='Отменить добавление товара', callback_data='cancel_add_product-' + data)
+    keyboard.button(text='Отменить добавление товара', callback_data='cancel_add_product')
     if skip_to:
         keyboard.button(text='Пропустить', callback_data=skip_to)
     return keyboard.as_markup()

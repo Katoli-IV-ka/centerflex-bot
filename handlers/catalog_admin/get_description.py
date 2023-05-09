@@ -17,26 +17,25 @@ async def to_description_call(call: CallbackQuery, state: FSMContext):
     # чистим чат
     data = await state.get_data()
     await call.message.delete()
-    await data['to_photo_temp'].delete()
+    await data['temp'].delete()
 
     await state.set_state(AddProductStates.getDescription)
 
     answer_msg = await call.message.answer(
         text=f'📝 Добавь описание товару',
-        reply_markup=cancel_keyboard(data='get_description_temp', skip_to="to_price")
+        reply_markup=cancel_keyboard(skip_to="to_price")
     )
 
-    await state.update_data(to_description_temp=answer_msg)
+    await state.update_data(temp=answer_msg)
 
 
 @router.message(F.text, AddProductStates.getDescription)
 async def get_description(msg: Message, state: FSMContext):
     # чистим чат
     data = await state.get_data()
-    await msg.delete()
     try:
-        await data['get_description_temp'].delete()
-    except KeyError:
+        await data['previous'].delete()
+    except TelegramBadRequest:
         pass
 
     # получаем экземпляр сообщения для последующего удаления
@@ -48,23 +47,23 @@ async def get_description(msg: Message, state: FSMContext):
             parse_mode=ParseMode.MARKDOWN_V2
         )
     except TelegramBadRequest:
-        await msg.answer(
+        answer_msg = await msg.answer(
             text='😬 Извините произошёл сбой. Повторите отправку',
             reply_markup=cancel_keyboard()
         )
 
     # сохраняем полученные данные
-    await state.update_data(product_description=msg.text, get_description_temp=answer_msg, description_message_temp=msg)
+    await state.update_data(previous=answer_msg, product_description=msg.text, description_message_temp=msg)
 
 
 @router.edited_message(IsDescriptionMessage(), AddProductStates.getDescription)
-async def edit_description_message(msg: Message, data: dict):
+async def edit_description_message(msg: Message, data: dict, state: FSMContext):
 
     try:
-        await data['get_description_temp'].edit_text(
+        await data['previous'].edit_text(
             text=f"*Описание добавленно*:\n`{msg.text}`\n"
                  "\nЕсли нужно внести правки просто отправить новое сообщение или отредактируй старое",
-            reply_markup=go_to_keyboard(callback_data='to_price accept_edit_price', text='Далее  👟'),
+            reply_markup=go_to_keyboard(callback_data='to_price', text='Далее  👟'),
             parse_mode=ParseMode.MARKDOWN_V2
         )
     except TelegramBadRequest:
@@ -72,3 +71,5 @@ async def edit_description_message(msg: Message, data: dict):
             text='😬 Извините произошёл сбой. Повторите отправку',
             reply_markup=cancel_keyboard()
         )
+
+    await state.update_data(product_description=msg.text)
