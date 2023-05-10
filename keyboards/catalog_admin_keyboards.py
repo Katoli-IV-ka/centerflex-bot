@@ -2,7 +2,7 @@ from aiogram.types import InlineKeyboardMarkup
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 
-def go_to_keyboard(callback_data, text='Далее') -> InlineKeyboardMarkup:
+def next_step_keyboard(callback_data, text='Далее') -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     keyboard.button(text=text, callback_data=callback_data)
     return keyboard.as_markup()

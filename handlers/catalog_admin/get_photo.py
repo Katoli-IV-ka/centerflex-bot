@@ -5,22 +5,21 @@ from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from keyboards.catalog_admin_keyboards import go_to_keyboard, cancel_keyboard
-from states.add_product import AddProductStates
+from handlers.catalog_admin.utils import del_temp_message, del_previous_message
+from keyboards.catalog_admin_keyboards import next_step_keyboard, cancel_keyboard
+from states.admin import CatalogToolsStates
 
 router = Router()
 
 
-@router.callback_query(Text('to_photo'), AddProductStates.getTitle)
-async def to_photo_call(call: CallbackQuery, state: FSMContext):
-    # чистим чат
+@router.callback_query(Text('enter_photo'), CatalogToolsStates.getTitle)
+async def enter_photo(call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    await call.message.delete()
-    await data['temp'].delete()
 
-    await state.set_state(AddProductStates.getPhoto)
+    await del_temp_message(data, call.message)
 
-    # сохраняем экземпляр сообщения для последующего удаления
+    await state.set_state(CatalogToolsStates.getPhoto)
+
     answer_msg = await call.message.answer(
         text=f'🖼 Загрузи фотографию товара',
         reply_markup=cancel_keyboard())
@@ -28,21 +27,17 @@ async def to_photo_call(call: CallbackQuery, state: FSMContext):
     await state.update_data(temp=answer_msg)
 
 
-@router.message(F.photo, AddProductStates.getPhoto)
-async def get_photo(msg: Message, state: FSMContext):
-    # чистим чат
+@router.message(F.photo, CatalogToolsStates.getPhoto)
+async def confirm_photo(msg: Message, state: FSMContext):
     data = await state.get_data()
-    await msg.delete()
-    try:
-        await data['previous'].delete()
-    except TelegramBadRequest:
-        pass
+
+    await del_previous_message(data, msg)
 
     try:
         answer_msg = await msg.answer_photo(
             caption="*Фотография загружена, сохранить?*\n"
                     "\nЧтобы изменить, просто отправь новое фото",
-            reply_markup=go_to_keyboard(callback_data='to_description', text='Далее  👟'),
+            reply_markup=next_step_keyboard(callback_data='enter_description', text='Далее  👟'),
             photo=msg.photo[-1].file_id,
             parse_mode=ParseMode.MARKDOWN_V2,
         )
@@ -52,8 +47,4 @@ async def get_photo(msg: Message, state: FSMContext):
             reply_markup=cancel_keyboard()
         )
 
-    # сохраняем полученные данные
     await state.update_data(previous=answer_msg, product_photo_id=msg.photo[-1].file_id)
-
-
-

@@ -6,24 +6,20 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from database import add_product
-from handlers.catalog_admin.fuction import format_product_text
+from handlers.catalog_admin.utils import format_product_text, del_temp_message
 from keyboards.catalog_admin_keyboards import save_product_keyboard
-from states.add_product import AddProductStates
+from states.admin import CatalogToolsStates
 
 router = Router()
 
 
-@router.callback_query(Text('to_save_product'), AddProductStates.getPrice)
+@router.callback_query(Text('save_product'), CatalogToolsStates.getPrice)
 async def to_price_call(call: CallbackQuery, state: FSMContext):
-    # чистим чат
     data = await state.get_data()
-    await call.message.delete()
-    try:
-        await data['temp'].delete()
-    except TelegramBadRequest:
-        pass
 
-    await state.set_state(AddProductStates.saveProduct)
+    await del_temp_message(data, call.message)
+
+    await state.set_state(CatalogToolsStates.viewProduct)
 
     # сохраняем информацию о товаре в базу данных
     await add_product(
