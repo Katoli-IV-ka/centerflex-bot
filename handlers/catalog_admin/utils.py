@@ -1,3 +1,7 @@
+from aiogram.exceptions import TelegramBadRequest
+from aiogram.types import Message
+
+
 def format_product_text(data: dict):
     text = f"*{data['product_title']}*"
 
@@ -11,3 +15,27 @@ def format_product_text(data: dict):
     text += '`Чтобы внести изменения используй клавиатуру внизу\.`'
 
     return text
+
+
+async def del_temp_message(data: dict, msg: Message = None):
+    if msg:
+        await msg.delete()
+
+    try:
+        await data['temp'].delete()
+    except TelegramBadRequest:
+        pass
+    except KeyError:
+        pass
+
+
+async def del_previous_message(data: dict, msg: Message = None):
+    if msg:
+        await msg.delete()
+
+    try:
+        await data['previous'].delete()
+    except TelegramBadRequest:
+        pass
+    except KeyError:
+        pass
