@@ -39,3 +39,10 @@ async def del_previous_message(data: dict, msg: Message = None):
         pass
     except KeyError:
         pass
+
+
+def escape_string(string):
+    characters_to_escape = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+    for character in characters_to_escape:
+        string = string.replace(character, '\\' + character)
+    return string

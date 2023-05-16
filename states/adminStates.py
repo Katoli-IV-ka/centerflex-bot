@@ -1,7 +1,7 @@
 from aiogram.fsm.state import StatesGroup, State
 
 
-class CatalogToolsStates(StatesGroup):
+class ManageProductStates(StatesGroup):
     getTitle = State()
     getPhoto = State()
     getDescription = State()
@@ -9,8 +9,8 @@ class CatalogToolsStates(StatesGroup):
 
     viewProduct = State()
 
-    editTitle = State()
-    editPhoto = State()
-    editDescription = State()
-    editPrice = State()
+    changeTitle = State()
+    changePhoto = State()
+    changeDescription = State()
+    changePrice = State()
 

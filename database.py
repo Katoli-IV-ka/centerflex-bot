@@ -25,6 +25,7 @@ async def add_product(title, photo_id, price=None, description=None, display=Fal
             VALUES (?,?,?,?,?)
         ''', (title, price, description, photo_id, display))
         await db.commit()
+        return cursor.lastrowid
 
 
 async def update_product(id, title, photo_id, price=None, description=None, display=False):
@@ -38,6 +39,61 @@ async def update_product(id, title, photo_id, price=None, description=None, disp
         await db.commit()
 
 
+async def update_product_title(id, new_title):
+    async with aiosqlite.connect('db_train.db') as db:
+        cursor = await db.cursor()
+        await cursor.execute('''
+            UPDATE products
+            SET title = ?
+            WHERE id = ?
+        ''', (new_title, id))
+        await db.commit()
+
+
+async def update_product_photo_id(id, new_photo_id):
+    async with aiosqlite.connect('db_train.db') as db:
+        cursor = await db.cursor()
+        await cursor.execute('''
+            UPDATE products
+            SET photo_id = ?
+            WHERE id = ?
+        ''', (new_photo_id, id))
+        await db.commit()
+
+
+async def update_product_description(id, new_description):
+    async with aiosqlite.connect('db_train.db') as db:
+        cursor = await db.cursor()
+        await cursor.execute('''
+            UPDATE products
+            SET description = ?
+            WHERE id = ?
+        ''', (new_description, id))
+        await db.commit()
+
+
+async def update_product_price(id, new_price):
+    async with aiosqlite.connect('db_train.db') as db:
+        cursor = await db.cursor()
+        await cursor.execute('''
+            UPDATE products
+            SET price = ?
+            WHERE id = ?
+        ''', (new_price, id))
+        await db.commit()
+
+
+async def update_product_display(id, new_display):
+    async with aiosqlite.connect('db_train.db') as db:
+        cursor = await db.cursor()
+        await cursor.execute('''
+            UPDATE products
+            SET display = ?
+            WHERE id = ?
+        ''', (new_display, id))
+        await db.commit()
+
+
 async def delete_product(id):
     async with aiosqlite.connect('db_train.db') as db:
         cursor = await db.cursor()
@@ -45,7 +101,7 @@ async def delete_product(id):
         await db.commit()
 
 
-async def get_data(table_name):
+async def get_data(table_name='products'):
     async with aiosqlite.connect('db_train.db') as db:
         cursor = await db.cursor()
         query = "SELECT * FROM {}".format(table_name)
@@ -54,14 +110,27 @@ async def get_data(table_name):
         return data
 
 
-async def get_value(field_name, field_value, table_name):
+async def get_values(field_name, field_value, table_name='products'):
     async with aiosqlite.connect('db_train.db') as db:
         cursor = await db.cursor()
         query = f"SELECT * FROM {table_name} WHERE {field_name} = ?"
         await cursor.execute(query, (field_value,))
-        data = await cursor.fetchall()
+        rows = await cursor.fetchall()
         await cursor.close()
-        if data:
-            return data
+
+        if rows:
+            products = []
+            for row in rows:
+                product = {
+                    'product_id': row[0],
+                    'product_title': row[1],
+                    'product_photo_id': row[2],
+                    'product_description': row[3],
+                    'product_price': row[4],
+                    'product_display': row[5]
+                }
+                products.append(product)
+
+            return products
         else:
             return None

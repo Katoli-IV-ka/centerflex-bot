@@ -3,12 +3,16 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 
 from config import TOKEN
+from database import create_products_table
 from loader import setup
 
 
 async def main():
     bot = Bot(token=TOKEN)
     dp = Dispatcher(storage=MemoryStorage())
+
+    #Создание базы данных
+    await create_products_table()
 
     # Регистрируем все обработчики
     setup(dp)

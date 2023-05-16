@@ -9,8 +9,6 @@ from handlers.commands import cmd_admin
 router = Router()
 
 
-
-
 @router.callback_query(Text('edit_catalog'))
 async def edit_catalog_call(msg: Message):
     await msg.answer(text="edit_catalog")
