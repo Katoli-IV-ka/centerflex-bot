@@ -6,7 +6,7 @@ def admin_keyboard() -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
     keyboard.button(text='Изменять каталог', callback_data='edit_catalog')
     keyboard.button(text='Добавить в каталог', callback_data='enter_title')
-    keyboard.button(text='Очередь уведомлений', callback_data='notification_queue')
+    keyboard.button(text='Очередь уведомлений', callback_data='notification_control')
     keyboard.button(text='Изменить информацию', callback_data='edit_info')
     keyboard.adjust(2, 1, 1)
     return keyboard.as_markup()
