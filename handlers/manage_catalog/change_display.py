@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import Text
 from aiogram.types import CallbackQuery
 
-from keyboards.catalog_admin_keyboards import save_product_keyboard
+from keyboards.manage_catalog.catalog_admin_keyboards import save_product_keyboard
 
 router = Router()
 

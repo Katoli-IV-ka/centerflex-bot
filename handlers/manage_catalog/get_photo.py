@@ -5,8 +5,8 @@ from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from handlers.catalog_admin.utils import del_temp_message, del_previous_message
-from keyboards.catalog_admin_keyboards import next_step_keyboard, cancel_keyboard
+from handlers.manage_catalog.utils import del_temp_message, del_previous_message
+from keyboards.manage_catalog.catalog_admin_keyboards import next_step_keyboard, cancel_keyboard
 from states.adminStates import ManageProductStates
 
 router = Router()
@@ -16,7 +16,7 @@ router = Router()
 async def enter_photo(call: CallbackQuery, state: FSMContext):
     data = await state.get_data()
 
-    await del_temp_message(data, call.message)
+    await del_temp_message(data)
 
     await state.set_state(ManageProductStates.getPhoto)
 
