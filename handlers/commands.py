@@ -2,8 +2,8 @@ from aiogram import types, Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 
-from keyboards.admin_keyboards import admin_keyboard
-from keyboards.user_keyboards import start_keyboard
+from keyboards.manage_catalog.admin_keyboards import admin_keyboard
+from keyboards.start_keyboard import start_keyboard
 
 router = Router()
 

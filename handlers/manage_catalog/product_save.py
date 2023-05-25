@@ -1,13 +1,13 @@
-from aiogram import Router, F
+from aiogram import Router
 from aiogram.enums import ParseMode
 from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from database import add_product, update_product_title, update_product_photo_id, update_product_description, \
-    update_product_price, get_values
-from handlers.catalog_admin.utils import format_product_text, del_temp_message
-from keyboards.catalog_admin_keyboards import save_product_keyboard
+    update_product_price, get_product
+from handlers.manage_catalog.utils import format_product_text, del_temp_message
+from keyboards.manage_catalog.catalog_admin_keyboards import save_product_keyboard
 from states.adminStates import ManageProductStates
 
 router = Router()
@@ -21,7 +21,7 @@ async def manage_product(call: CallbackQuery, state: FSMContext):
 
     await state.set_state(ManageProductStates.viewProduct)
 
-    product_data = await get_values(field_name='id', field_value=str(data['product_id']))
+    product_data = await get_product(field_name='id', field_value=str(data['product_id']))
 
     await call.message.answer_photo(
         photo=product_data[-1]['product_photo_id'],
@@ -41,6 +41,7 @@ async def save_product(call: CallbackQuery, state: FSMContext):
         description=data['product_description'],
         price=data['product_price'],
         display=data['product_display'],
+        category_id=data['product_category_id']
     )
 
     await state.update_data(product_id=product_id)

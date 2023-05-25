@@ -5,8 +5,8 @@ from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from handlers.catalog_admin.utils import del_previous_message, escape_string
-from keyboards.catalog_admin_keyboards import next_step_keyboard, cancel_keyboard
+from handlers.manage_catalog.utils import del_previous_message, escape_string
+from keyboards.manage_catalog.catalog_admin_keyboards import next_step_keyboard, cancel_keyboard
 from states.adminStates import ManageProductStates
 
 router = Router()
@@ -26,6 +26,7 @@ async def enter_title(call: CallbackQuery, state: FSMContext):
     await state.update_data(
         temp=answer_msg,
         product_title=None,
+        product_category=None,
         product_photo=None,
         product_description=None,
         product_price=None,
@@ -44,7 +45,7 @@ async def confirm_title(msg: Message, state: FSMContext):
         answer_msg = await msg.answer(
             text=f"*Название товара*: _{escape_string(msg.text)}_\n"
                  "\nЧтобы внести изменения отредактируй сообщение или отправь новое\. Если всё верно, идём дальше 👟",
-            reply_markup=next_step_keyboard(callback_data='enter_photo'),
+            reply_markup=next_step_keyboard(callback_data='enter_category'),
             parse_mode=ParseMode.MARKDOWN_V2
         )
     except TelegramBadRequest:
