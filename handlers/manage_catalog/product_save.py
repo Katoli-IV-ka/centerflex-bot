@@ -6,7 +6,7 @@ from aiogram.types import CallbackQuery
 
 from database import add_product, update_product_title, update_product_photo_id, update_product_description, \
     update_product_price, get_product
-from handlers.manage_catalog.utils import format_product_text, del_temp_message
+from handlers.utils import format_admin_product_text, del_temp_message
 from keyboards.manage_catalog.catalog_admin_keyboards import save_product_keyboard
 from states.adminStates import ManageProductStates
 
@@ -26,7 +26,7 @@ async def manage_product(call: CallbackQuery, state: FSMContext):
     await call.message.answer_photo(
         photo=product_data[-1]['product_photo_id'],
         parse_mode=ParseMode.MARKDOWN_V2,
-        caption=format_product_text(product_data[-1]),
+        caption=format_admin_product_text(product_data[-1]),
         reply_markup=save_product_keyboard(product_data[-1]['product_display'])
     )
 

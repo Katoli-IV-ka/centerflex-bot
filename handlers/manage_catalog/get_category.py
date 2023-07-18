@@ -5,7 +5,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 from handlers.manage_catalog.get_photo import enter_photo
-from handlers.manage_catalog.utils import del_temp_message, del_previous_message
+from handlers.utils import del_temp_message, del_previous_message
 from keyboards.manage_catalog.product_category_keyboard import product_category_keyboard
 from states.adminStates import ManageProductStates
 

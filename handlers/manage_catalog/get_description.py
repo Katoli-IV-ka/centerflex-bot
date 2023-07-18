@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from filters.id_filter import IsDescriptionMessage
-from handlers.manage_catalog.utils import del_previous_message, del_temp_message, escape_string
+from handlers.utils import del_previous_message, del_temp_message, escape_string
 from keyboards.manage_catalog.catalog_admin_keyboards import cancel_keyboard, next_step_keyboard
 from states.adminStates import ManageProductStates
 

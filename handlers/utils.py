@@ -2,7 +2,7 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import Message
 
 
-def format_product_text(data: dict):
+def format_admin_product_text(data: dict):
     text = f"*{data['product_title']}*"
 
     if data['product_description']:
@@ -46,3 +46,15 @@ def escape_string(string):
     for character in characters_to_escape:
         string = string.replace(character, '\\' + character)
     return string
+
+
+def get_product_text(data):
+    text = f"*{data['product_title']}*"
+
+    if data['product_description']:
+        text += f"\n\n_{data['product_description']}_"
+
+    if data['product_price']:
+        text += f"\n\nОриентировочная цена: *{data['product_price']}* руб\."
+
+    return text

@@ -3,7 +3,7 @@ from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
-from handlers.manage_catalog.utils import del_previous_message
+from handlers.utils import del_previous_message
 from handlers.commands import cmd_admin
 
 router = Router()

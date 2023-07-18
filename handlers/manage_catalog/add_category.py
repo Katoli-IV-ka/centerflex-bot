@@ -7,7 +7,7 @@ from aiogram.types import CallbackQuery, Message
 
 from database import add_category
 from handlers.manage_catalog.get_photo import enter_photo
-from handlers.manage_catalog.utils import del_temp_message, escape_string, del_previous_message
+from handlers.utils import del_temp_message, escape_string, del_previous_message
 from keyboards.manage_catalog.catalog_admin_keyboards import cancel_keyboard
 from keyboards.manage_catalog.save_category_keyboard import save_category_keyboard
 from states.adminStates import ManageProductStates
