@@ -5,7 +5,7 @@ from aiogram.filters import Text
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
-from database import add_category, get_category
+from database import add_category
 from handlers.manage_catalog.get_photo import enter_photo
 from handlers.manage_catalog.utils import del_temp_message, escape_string, del_previous_message
 from keyboards.manage_catalog.catalog_admin_keyboards import cancel_keyboard
