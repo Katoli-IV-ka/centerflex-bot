@@ -19,10 +19,38 @@ async def categories_keyboard() -> InlineKeyboardMarkup:
     return keyboard.as_markup()
 
 
-async def pages_keyboard() -> InlineKeyboardMarkup:
+async def product_keyboard(call) -> InlineKeyboardMarkup:
     keyboard = InlineKeyboardBuilder()
 
-    keyboard.button(text=f'В главное меню', callback_data="to_user_menu")
-    keyboard.button(text=f'Дальше ', callback_data=f'next_pages')
+    keyboard.button(text=f'Назад', callback_data="previous_"+call)
+    keyboard.button(text=f'В каталог', callback_data="to_chocie_category/")
+    keyboard.button(text=f'Дальше', callback_data="next_"+call)
 
     return keyboard.as_markup()
+
+
+async def last_product_keyboard(call) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+
+    keyboard.button(text=f'Назад', callback_data="previous_"+call)
+    keyboard.button(text=f'В каталог', callback_data="to_chocie_category")
+
+    return keyboard.as_markup()
+
+
+async def first_product_keyboard(call) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+
+    keyboard.button(text=f'В каталог', callback_data="to_chocie_category")
+    keyboard.button(text=f'Дальше', callback_data="next_"+call)
+
+    return keyboard.as_markup()
+
+
+async def one_product_keyboard() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+
+    keyboard.button(text=f'В каталог', callback_data="to_chocie_category")
+
+    return keyboard.as_markup()
+

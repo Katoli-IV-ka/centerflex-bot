@@ -1,59 +1,50 @@
 from aiogram import Router
 from aiogram.enums import ParseMode
 from aiogram.filters import Text
-from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
 
 from database import get_product
 from handlers.utils import get_product_text
-from keyboards.view_catalog.catalog_category_keyboard import categories_keyboard, pages_keyboard
-from states.userStates import ViewCatalogStates
+from keyboards.view_catalog.catalog_category_keyboard import categories_keyboard, first_product_keyboard, \
+    one_product_keyboard
 
 router = Router()
 
 
 @router.callback_query(Text('catalog'))
-async def catalog_choice_category(call: CallbackQuery, state: FSMContext):
+async def catalog_choice_category(call: CallbackQuery):
     await call.message.answer(
         text='Выберите категорию',
         reply_markup=await categories_keyboard()
     )
 
-    await state.set_state(ViewCatalogStates.viewProductsPage)
 
-
-@router.callback_query(Text(contains='catalog_category_'), ViewCatalogStates.viewProductsPage)
-async def catalog_all_products(call: CallbackQuery, state: FSMContext):
+@router.callback_query(Text(contains='catalog_category_'))
+async def catalog_all_products(call: CallbackQuery):
     products = await get_product('category_id', call.data.split('_')[-1])
-    page = 1
-    await state.update_data(view_page=page, products_data=products)
+
+    await call.message.delete()
 
     if products is None:
         await call.message.answer(
             text='К сожелению в данной категории нет доступных товаров ' 
             'Вы можете выбрать другую категорию'
         )
-        return None
 
-    if len(products) < 3:
-        for i in products[page * 2 - 2:page * 2]:
-            await call.message.answer_photo(
-                photo=i['product_photo_id'],
-                parse_mode=ParseMode.MARKDOWN_V2,
-                caption=get_product_text(i),
-            )
-
-        return None
-
-    for i in products[page*2-2:page*2]:
+    elif len(products) == 1:
         await call.message.answer_photo(
-            photo=i['product_photo_id'],
+            photo=products[0]['product_photo_id'],
             parse_mode=ParseMode.MARKDOWN_V2,
-            caption=get_product_text(i),
+            caption=get_product_text(products[0]),
+            reply_markup=await one_product_keyboard(),
         )
 
-    await call.message.answer(
-        text=f"Текущая страница: {page}",
-        reply_markup=await pages_keyboard(),
-    )
+    else:
+        await call.message.answer_photo(
+            photo=products[0]['product_photo_id'],
+            parse_mode=ParseMode.MARKDOWN_V2,
+            caption=get_product_text(products[0]),
+            reply_markup=await first_product_keyboard(f'product_{call.data.split("_")[-1]}_{0}'),
+        )
+
