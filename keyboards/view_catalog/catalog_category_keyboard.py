@@ -17,3 +17,12 @@ async def categories_keyboard() -> InlineKeyboardMarkup:
     keyboard.row(add_category_button, width=1)
 
     return keyboard.as_markup()
+
+
+async def pages_keyboard() -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardBuilder()
+
+    keyboard.button(text=f'В главное меню', callback_data="to_user_menu")
+    keyboard.button(text=f'Дальше ', callback_data=f'next_pages')
+
+    return keyboard.as_markup()
